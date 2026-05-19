@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 200px 150px 100px 150px;
+}
+
+.searchDiv {
+  margin-bottom: 100px;
+}
+
+.profileHeader {
+  width: 100%;
+}
+
+.infoCardSection {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
