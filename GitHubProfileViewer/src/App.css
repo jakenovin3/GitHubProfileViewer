@@ -28,7 +28,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 100px 175px 100px 175px;
+  margin: 100px 175px 60px 175px;
 }
 
 .header {
@@ -77,11 +77,15 @@ body {
   border-radius: 9px;
 }
 
+.profileHeaderSection {
+  display: flex;
+}
+
 .profileHeader {
-  width: 100%;
   min-width: 300px;
   display:inline-flex;
   justify-content: space-between;
+  margin-bottom: 30px;
   padding: 30px;
   background-color: var(--bg-card);
   border: 1px solid var(--accent);
@@ -115,8 +119,26 @@ body {
   display: inline-flex;
 }
 
-.infoCardSection {
+.profileBody {
   width: 100%;
-  display: flex;
-  justify-content: center;
+}
+
+.repoSection {
+  display:flex;
+  flex-direction: column;
+  padding: 30px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 30px;
+}
+
+.repoSection > h2 {
+  margin-bottom: 25px;
+}
+
+.repository {
+  margin: 4px;
+  padding: 10px;
+  background-color: var(--bg-surface);
+  border-radius: 15px;
 }

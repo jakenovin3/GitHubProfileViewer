@@ -3,10 +3,18 @@ import React, { useState } from 'react'
 
 // Components
 function SearchBar({onSearch}) {
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    onSearch();
+  }
+
   return(
     <div className="searchDiv">
-      <input type="searchField" id="profileSearch" name="profileSearch" placeholder="Enter GitHub username"></input>
-      <button id="searchSubmit" onClick={onSearch}>Search</button>
+      <form onSubmit={handleSubmit}>
+        <input type="text" id="profileSearch" name="profileSearch" placeholder="Enter GitHub username"></input>
+        <button id="searchSubmit" onClick={onSearch}>Search</button>
+      </form>
     </div>
   );
 }
@@ -15,7 +23,7 @@ function ProfileHeader({user}) {
   return(
     <div className="profileHeader">
       <div id="userInfo">
-        <img id="profileImage" src={user?.avatar_url} alt="profile image"></img>
+        <img id="profileImage" src={user?.avatar_url} alt="profile image" />
         <h1>{user?.login}</h1>
         <p>{user?.location}</p>
       </div>
@@ -27,29 +35,35 @@ function ProfileHeader({user}) {
   );
 }
 
-function RepoSection({repos}) {
+function RepoSection({repoData}) {
+  return(
+    <div className="repoSection">
+      <h2>Repositories</h2>
+      {repoData?.map((repo) => (
+        <Repository key={repo.id} repo={repo} />
+      ))}
+    </div>
+  );
+}
 
-  
-
+function Repository({repo}) {
   return(
 
-    <div className="userRepositories">
-      <Repository repoNumber={{}}/>
+    <div className="repository">
+      <h3>{repo?.name}</h3>
+      <h5>{repo?.description}</h5>
     </div>
 
   );
 }
 
-function Repository({repoNumber}) {
-
-
-
+function LanguageBreakdown({repoData}) {
   return(
-    <>
-    </>
+    <div className="languageBreakdown">
+
+    </div>
   );
 }
-
 
 export default function App() {
 
@@ -65,8 +79,9 @@ export default function App() {
   }
 
   async function getUserData() {
-    
-    const searchedUsername = "octocat"; // document.querySelector('#profileSearch').value;
+
+    // const searchedUsername = document.querySelector('#profileSearch').value;
+    const searchedUsername = "octocat";
 
     try {
       const [userData, repoData] = await Promise.all([
@@ -82,19 +97,21 @@ export default function App() {
     }
   }
 
-
   return(
     <>
-    <div className="header">
-      <img id="githubLogo" src="../media/github-logo.svg"></img>
-      <SearchBar id="searchBar" onSearch={getUserData}/>
-    </div>
-    <div className="main">
-      <ProfileHeader user={userData} />
-      <div className="profileBody">
-        <RepoSection user={repoData}/>
+      <div className="header">
+        <img id="githubLogo" src="../media/github-logo.svg"></img>
+        <SearchBar id="searchBar" onSearch={getUserData}/>
       </div>
-    </div>
+      <div className="main">
+        <div className="profileHeaderSection">
+          <ProfileHeader user={userData} />
+        </div>
+        <div className="profileBody">
+          <RepoSection repoData={repoData} />
+          <LanguageBreakdown repoData={repoData} />
+        </div>
+      </div>
     </>
   );
 }
