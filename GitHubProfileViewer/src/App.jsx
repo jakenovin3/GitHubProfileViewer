@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import gihubLogo from "./assets/github-logo.svg";
 
 
 // Components
@@ -48,12 +49,12 @@ function RepoSection({repoData}) {
 
 function Repository({repo}) {
   return(
-
-    <div className="repository">
-      <h3>{repo?.name}</h3>
-      <h5>{repo?.description}</h5>
-    </div>
-
+    <a href={repo?.html_url} className="repoLink" target="_blank" rel="noopener noreferrer">
+      <div className="repository">
+          <h3>{repo?.name}</h3>
+          <h5>{repo?.description}</h5>
+      </div>
+    </a>
   );
 }
 
@@ -80,8 +81,8 @@ export default function App() {
 
   async function getUserData() {
 
-    // const searchedUsername = document.querySelector('#profileSearch').value;
-    const searchedUsername = "octocat";
+    const searchedUsername = document.querySelector('#profileSearch').value;
+    //const searchedUsername = "octocat";
 
     try {
       const [userData, repoData] = await Promise.all([
@@ -100,7 +101,7 @@ export default function App() {
   return(
     <>
       <div className="header">
-        <img id="githubLogo" src="../media/github-logo.svg"></img>
+        <img id="githubLogo" src={gihubLogo}></img>
         <SearchBar id="searchBar" onSearch={getUserData}/>
       </div>
       <div className="main">

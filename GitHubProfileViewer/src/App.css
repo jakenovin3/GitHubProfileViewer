@@ -23,12 +23,13 @@ body {
 }
 
 .main {
+  box-sizing: border-box;
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  margin: 100px 175px 60px 175px;
+  align-items: flex-start;
+  padding: 0 175px 60px 175px;
 }
 
 .header {
@@ -78,10 +79,12 @@ body {
 }
 
 .profileHeaderSection {
+  width: 100%;
   display: flex;
 }
 
 .profileHeader {
+  width: 100%;
   min-width: 300px;
   display:inline-flex;
   justify-content: space-between;
@@ -126,6 +129,7 @@ body {
 .repoSection {
   display:flex;
   flex-direction: column;
+  gap: 4px;
   padding: 30px;
   background-color: var(--bg-card);
   border: 1px solid var(--accent);
@@ -133,12 +137,37 @@ body {
 }
 
 .repoSection > h2 {
+  display: flex;
+  flex-direction: flex-start;
   margin-bottom: 25px;
 }
 
 .repository {
-  margin: 4px;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 15px;
   background-color: var(--bg-surface);
   border-radius: 15px;
+  transform: translateY(0);
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.repository:hover {
+  background-color: var(--bg-primary);
+  cursor: pointer;
+  transform: translateY(-2px);
+  animation-duration: 0.25s;
+}
+
+.repoLink {
+  color: inherit;
+  text-decoration: none!important;
+}
+
+
+
+.repository > h3, .repository > h5 {
+  display: flex;
+  flex-direction: flex-start;
 }
