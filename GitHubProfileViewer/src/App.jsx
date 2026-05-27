@@ -1,9 +1,29 @@
 import React, { useState } from 'react'
-import gihubLogo from "./assets/github-logo.svg";
+import githubLogo from "./assets/github-logo.svg";
+import githubLogoWhite from "./assets/github-logo-white.svg";
 
 
-// Components
-function SearchBar({onSearch}) {
+function WelcomePage({selectUser}) {
+  return(
+    <div id="welcomePageContainer">
+      <div id="welcomePageSection">
+        <img src={githubLogoWhite}></img>
+        <h1>Search for a GitHub user</h1>
+        <h4>Enter a username above to view their profile and repositories</h4>
+        <h4>Or start with one of these</h4>
+        <ul id="suggestedUsersList">
+          <li className="suggestedUser" onClick={() => selectUser("jakenovin3")}><b>jakenovin3</b></li>
+          <li className="suggestedUser" onClick={() => selectUser("octocat")}><b>octocat</b></li>
+          <li className="suggestedUser" onClick={() => selectUser("n0an")}><b>n0an</b></li>
+          <li className="suggestedUser" onClick={() => selectUser("theovilardo")}><b>theovilardo</b></li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+
+function SearchBar({onSearch, resetUser}) {
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -11,12 +31,15 @@ function SearchBar({onSearch}) {
   }
 
   return(
-    <div className="searchDiv">
-      <form onSubmit={handleSubmit}>
-        <input type="text" id="profileSearch" name="profileSearch" placeholder="Enter GitHub username"></input>
-        <button id="searchSubmit" onClick={onSearch}>Search</button>
-      </form>
-    </div>
+    <>
+      <img id="githubLogo" src={githubLogo} onClick={resetUser}></img>
+      <div className="searchDiv">
+        <form onSubmit={handleSubmit}>
+          <input type="text" id="profileSearch" name="profileSearch" placeholder="Enter GitHub username"></input>
+          <button id="searchSubmit" onClick={onSearch}>Search</button>
+        </form>
+      </div>
+    </>
   );
 }
 
@@ -40,9 +63,11 @@ function RepoSection({repoData}) {
   return(
     <div className="repoSection">
       <h2>Repositories</h2>
-      {repoData?.map((repo) => (
-        <Repository key={repo.id} repo={repo} />
-      ))}
+      <div id="repoList">
+        {repoData?.map((repo) => (
+          <Repository key={repo.id} repo={repo} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -79,10 +104,10 @@ export default function App() {
     return data;
   }
 
-  async function getUserData() {
+  async function getUserData(selectedUsername) {
 
-    const searchedUsername = document.querySelector('#profileSearch').value;
-    //const searchedUsername = "octocat";
+    //const searchedUsername = document.querySelector('#profileSearch').value;
+    const searchedUsername = selectedUsername || "octocat";
 
     try {
       const [userData, repoData] = await Promise.all([
@@ -98,21 +123,32 @@ export default function App() {
     }
   }
 
+  function resetUser() {
+    setUserData(null);
+    setRepoData(null);
+  }
+
+
   return(
     <>
       <div className="header">
-        <img id="githubLogo" src={gihubLogo}></img>
-        <SearchBar id="searchBar" onSearch={getUserData}/>
+        <SearchBar id="searchBar" onSearch={getUserData} resetUser={resetUser}/>
       </div>
-      <div className="main">
-        <div className="profileHeaderSection">
-          <ProfileHeader user={userData} />
-        </div>
-        <div className="profileBody">
-          <RepoSection repoData={repoData} />
-          <LanguageBreakdown repoData={repoData} />
-        </div>
-      </div>
+      {!userData ?
+        <WelcomePage selectUser={getUserData}/> : 
+        (
+          <div className="main">
+            <div className="profileHeaderSection">
+              <ProfileHeader user={userData} />
+            </div>
+            <div className="profileBody">
+              <RepoSection repoData={repoData} />
+              <LanguageBreakdown repoData={repoData} />
+            </div>
+          </div>
+        )
+      }
+      
     </>
   );
 }

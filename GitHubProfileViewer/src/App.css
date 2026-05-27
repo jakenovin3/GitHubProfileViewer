@@ -22,6 +22,52 @@ body {
   margin: 0;
 }
 
+#welcomePageContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 175px;
+}
+
+#welcomePageSection {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  padding: 30px 100px 30px 100px;
+  border: 1px solid var(--accent);
+  border-radius: 30px;
+  background-color: var(--bg-card);
+}
+
+#welcomePageSection > img {
+  width: 100px;
+  height: auto;
+}
+
+#suggestedUsersList {
+  display: flex;
+  gap: 8px;
+  padding: 0;
+  list-style-type: none;
+}
+
+.suggestedUser {
+  font-size: 13px;
+  padding: 8px;
+  background-color: var(--bg-surface);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+}
+
+.suggestedUser:hover {
+  cursor: pointer;
+  background-color: var(--bg-card);
+  transition: 250ms;
+}
+
 .main {
   box-sizing: border-box;
   color: var(--text-primary);
@@ -29,10 +75,12 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: 0 175px 60px 175px;
+  padding: 175px 175px 60px 175px;
 }
 
 .header {
+  width: 100%;
+  position: fixed;
   background: var(--bg-primary);
   color: var(--text-primary);
   display: flex;
@@ -45,6 +93,7 @@ body {
 #githubLogo {
   height: 65px;
   width: 65px;
+  cursor: pointer;
 }
 
 .searchDiv {
@@ -134,6 +183,11 @@ body {
   background-color: var(--bg-card);
   border: 1px solid var(--accent);
   border-radius: 30px;
+}
+
+#repoList {
+  max-height: 450px;
+  overflow-y: auto;
 }
 
 .repoSection > h2 {
