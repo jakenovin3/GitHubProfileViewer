@@ -1,7 +1,22 @@
 import React, { useState } from 'react'
 import githubLogo from "./assets/github-logo.svg";
 import githubLogoWhite from "./assets/github-logo-white.svg";
+//import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
+
+async function getLanguageData(userData, repoData) {
+
+  let languages;
+
+  const langPromises = repoData.map(async (repo) => {
+    const response = await fetch("https://api.github.com/repos/" + userData.login + repo.name + "/langauges");
+    console.log(response);
+    return response.json();
+  });
+
+  const languageData = await Promise.all(langPromises);
+  console.log(languageData)
+}
 
 function WelcomePage({selectUser}) {
   return(
@@ -95,6 +110,7 @@ export default function App() {
 
   const [userData, setUserData] = useState(null);
   const [repoData, setRepoData] = useState(null);
+  const [langData, setLangData] = useState(null);
 
   async function githubFetch(endpoint) {
     const response = await fetch("https://api.github.com/" + endpoint);
@@ -110,13 +126,14 @@ export default function App() {
     const searchedUsername = selectedUsername || "octocat";
 
     try {
-      const [userData, repoData] = await Promise.all([
+      const [userData, repoData, languageData] = await Promise.all([
         githubFetch("users/" + searchedUsername),
         githubFetch("users/" + searchedUsername + "/repos")
       ]);
 
       setUserData(userData);
-      setRepoData(repoData)
+      setRepoData(repoData);
+      //getLanguageData(userData, repoData);
 
     } catch(error) {
       console.error("Here is the error: " + error);
@@ -126,6 +143,7 @@ export default function App() {
   function resetUser() {
     setUserData(null);
     setRepoData(null);
+    setLangData(null);
   }
 
 
