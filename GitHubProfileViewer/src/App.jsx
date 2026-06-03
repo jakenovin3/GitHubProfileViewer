@@ -6,16 +6,14 @@ import githubLogoWhite from "./assets/github-logo-white.svg";
 
 async function getLanguageData(userData, repoData) {
 
-  let languages;
-
   const langPromises = repoData.map(async (repo) => {
-    const response = await fetch("https://api.github.com/repos/" + userData.login + repo.name + "/langauges");
-    console.log(response);
+    const response = await fetch("https://api.github.com/repos/" + userData.login + "/" + repo.name + "/languages");
     return response.json();
   });
 
   const languageData = await Promise.all(langPromises);
-  console.log(languageData)
+
+  return(languageData);
 }
 
 function WelcomePage({selectUser}) {
@@ -98,7 +96,19 @@ function Repository({repo}) {
   );
 }
 
-function LanguageBreakdown({repoData}) {
+function LanguageBreakdown({languageData}) {
+
+  const languages = languageData;
+
+  const languageSums = languageData.reduce((acc, repoLangs) => {
+    for(const [lang, bytes] of Object.entries(repoLangs)) {
+      acc[lang] = (acc[lang] || 0) + bytes;
+    }
+    return acc;
+  }, {});
+
+
+  console.log("Sums: ", languageSums);
   return(
     <div className="languageBreakdown">
 
@@ -122,18 +132,20 @@ export default function App() {
 
   async function getUserData(selectedUsername) {
 
-    //const searchedUsername = document.querySelector('#profileSearch').value;
-    const searchedUsername = selectedUsername || "octocat";
+    // const searchedUsername = document.querySelector('#profileSearch').value;
+    const searchedUsername = selectedUsername;
 
     try {
-      const [userData, repoData, languageData] = await Promise.all([
+      const [userData, repoData] = await Promise.all([
         githubFetch("users/" + searchedUsername),
         githubFetch("users/" + searchedUsername + "/repos")
       ]);
 
+      const languageData = await getLanguageData(userData, repoData);
+
       setUserData(userData);
       setRepoData(repoData);
-      //getLanguageData(userData, repoData);
+      setLangData(languageData);
 
     } catch(error) {
       console.error("Here is the error: " + error);
@@ -161,7 +173,7 @@ export default function App() {
             </div>
             <div className="profileBody">
               <RepoSection repoData={repoData} />
-              <LanguageBreakdown repoData={repoData} />
+              <LanguageBreakdown languageData={langData} />
             </div>
           </div>
         )
