@@ -7,7 +7,12 @@ import githubLogoWhite from "./assets/github-logo-white.svg";
 async function getLanguageData(userData, repoData) {
 
   const langPromises = repoData.map(async (repo) => {
-    const response = await fetch("https://api.github.com/repos/" + userData.login + "/" + repo.name + "/languages");
+    const endpoint = "repos/" + userData.login + "/" + repo.name + "/languages";
+    const response = await fetch("https://api.github.com/" + endpoint, {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
+      },
+    });
     return response.json();
   });
 
@@ -123,7 +128,11 @@ export default function App() {
   const [langData, setLangData] = useState(null);
 
   async function githubFetch(endpoint) {
-    const response = await fetch("https://api.github.com/" + endpoint);
+    const response = await fetch("https://api.github.com/" + endpoint, {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
+      },
+    });
     if(!response.ok) { throw new Error("Response status: " + response.status); }
     const data = await response.json();
 
