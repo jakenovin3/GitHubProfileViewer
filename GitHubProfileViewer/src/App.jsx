@@ -66,8 +66,8 @@ function ProfileHeader({user}) {
     <div className="profileHeader">
       <div id="userInfo">
         <img id="profileImage" src={user?.avatar_url} alt="profile image" />
-        <h1>{user?.login}</h1>
-        <p>{user?.location}</p>
+        <h1 id="userLocation">{user?.login}</h1>
+        <p id="userL">{user?.location}</p>
       </div>
       <div id="accountInfo">
         <p><b>{user?.followers}</b> followers</p>
@@ -94,8 +94,17 @@ function Repository({repo}) {
   return(
     <a href={repo?.html_url} className="repoLink" target="_blank" rel="noopener noreferrer">
       <div className="repository">
-          <h3>{repo?.name}</h3>
-          <h5>{repo?.description}</h5>
+        <div className="mainRepoContent">
+          <div className="repoInfo">
+            <h3>{repo?.name}</h3>
+            <h5>{repo?.description}</h5>
+          </div>
+          <div className="repoData">
+            <p><b>{repo?.stargazers_count}</b> stars</p>
+            <p><b>{repo?.forks_count}</b> forks</p>
+          </div>
+          <p>Last updated on {repo?.updated_at}</p>
+        </div>
       </div>
     </a>
   );
