@@ -203,6 +203,20 @@ body {
   border-radius: 30px;
 }
 
+.repoHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#repoTopLanguage {
+  height: fit-content;
+  padding: 3px;
+  font-size: 10px;
+  border: white 1px solid;
+  border-radius: 4px;
+}
+
 #repoList {
   max-height: 450px;
   overflow-y: auto;
@@ -229,7 +243,6 @@ body {
 .repository:hover {
   background-color: var(--bg-primary);
   cursor: pointer;
-  transform: translateY(-2px);
   animation-duration: 0.25s;
 }
 
@@ -248,9 +261,18 @@ body {
   text-decoration: none!important;
 }
 
-.repository > h3, .repository > h5 {
+.repository > h3, .repository > h4 {
   display: flex;
   flex-direction: flex-start;
+}
+
+.updatedAt {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.updatedAt > p {
+  font-size: 12px;
 }
 
 @media (max-width: 600px) {
