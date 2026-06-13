@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import githubLogo from "./assets/github-logo.svg";
 import githubLogoWhite from "./assets/github-logo-white.svg";
-//import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+//import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
+// Acquires languages used across all repos of specific user. Returns Object
 async function getLanguageData(userData, repoData) {
   const langPromises = repoData.map(async (repo) => {
     const endpoint = "repos/" + userData.login + "/" + repo.name + "/languages";
@@ -105,7 +106,6 @@ function RepoSection({ repoData, languages }) {
 }
 
 function Repository({ repo, languages }) {
-  //console.log("repo languages: ", languages);
   const lastUpdatedDate = new Date(repo?.updated_at);
   const dateFormatting = {
     year: "numeric",
@@ -114,6 +114,7 @@ function Repository({ repo, languages }) {
   };
   const formattedDate = lastUpdatedDate.toLocaleDateString("en-US", dateFormatting);
 
+  // Calculates most popular language of specific repo based on number of bytes
   const repoPrimaryLanguage = () => {
     for (const currentRepo of languages) {
       if (
@@ -169,6 +170,7 @@ function Repository({ repo, languages }) {
 function LanguageBreakdown({ languageData }) {
   const languages = languageData.map(({ repoLanguages }) => repoLanguages);
 
+  // Aggregating total bytes per language from all repos
   const languageSums = languages.reduce((acc, repoLangs) => {
     for (const [lang, bytes] of Object.entries(repoLangs)) {
       acc[lang] = (acc[lang] || 0) + bytes;
@@ -176,7 +178,14 @@ function LanguageBreakdown({ languageData }) {
     return acc;
   }, {});
 
+  // Transforming Object of languages to Array of Objects for reCharts
+  const languageArr = [];
+  for (const [key, val] of Object.entries(languageSums)) {
+    languageArr.push({ name: key, value: val });
+  }
+
   console.log("Sums: ", languageSums);
+  console.log("Arr: ", languageArr);
   return <div className="languageBreakdown"></div>;
 }
 
@@ -185,6 +194,7 @@ export default function App() {
   const [repoData, setRepoData] = useState(null);
   const [langData, setLangData] = useState(null);
 
+  // Fetches JSON user data from desired endpoint
   async function githubFetch(endpoint) {
     const response = await fetch("https://api.github.com/" + endpoint);
     if (!response.ok) {
@@ -195,6 +205,7 @@ export default function App() {
     return data;
   }
 
+  // Seeks out and sets user data's state
   async function getUserData(selectedUsername) {
     const searchedUsername = selectedUsername;
 
