@@ -90,6 +90,7 @@ body {
   margin-bottom: 100px;
   padding: 10px 20px;
   gap: clamp(0.5rem, 3vw, 4rem);
+  z-index: 1000;
 }
 
 #githubLogo {

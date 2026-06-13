@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import githubLogo from "./assets/github-logo.svg";
 import githubLogoWhite from "./assets/github-logo-white.svg";
-//import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
 // Acquires languages used across all repos of specific user. Returns Object
 async function getLanguageData(userData, repoData) {
   const langPromises = repoData.map(async (repo) => {
     const endpoint = "repos/" + userData.login + "/" + repo.name + "/languages";
-    const response = await fetch("https://api.github.com/" + endpoint);
+    const response = await fetch("https://api.github.com/" + endpoint, {
+      headers: {
+        Authorization: "Bearer " + import.meta.env.VITE_GITHUB_TOKEN,
+      },
+    });
     const langResolve = await response.json();
 
     return { repoName: repo.name, repoLanguages: langResolve };
@@ -179,14 +183,32 @@ function LanguageBreakdown({ languageData }) {
   }, {});
 
   // Transforming Object of languages to Array of Objects for reCharts
-  const languageArr = [];
+  let languageArr = [];
   for (const [key, val] of Object.entries(languageSums)) {
     languageArr.push({ name: key, value: val });
   }
 
+  // Sorting language list by number of bytes (highest to lowest), then grabbing top 10
+  languageArr = languageArr.sort((a, b) => b.value - a.value).slice(0, 10);
+
   console.log("Sums: ", languageSums);
   console.log("Arr: ", languageArr);
-  return <div className="languageBreakdown"></div>;
+
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
+  return (
+    <div className="languageBreakdown">
+      <PieChart width={500} height={500}>
+        <Pie data={languageArr} nameKey="name" dataKey="value" isAnimationActive={true}>
+          {languageArr.map((entry, index) => {
+            return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />;
+          })}
+        </Pie>
+        <Legend />
+        <Tooltip />
+      </PieChart>
+    </div>
+  );
 }
 
 export default function App() {
@@ -196,7 +218,11 @@ export default function App() {
 
   // Fetches JSON user data from desired endpoint
   async function githubFetch(endpoint) {
-    const response = await fetch("https://api.github.com/" + endpoint);
+    const response = await fetch("https://api.github.com/" + endpoint, {
+      headers: {
+        Authorization: "Bearer " + import.meta.env.VITE_GITHUB_TOKEN,
+      },
+    });
     if (!response.ok) {
       throw new Error("Response status: " + response.status);
     }
