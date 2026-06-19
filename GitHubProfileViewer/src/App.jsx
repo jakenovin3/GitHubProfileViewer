@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import githubLogo from "./assets/github-logo.svg";
 import githubLogoWhite from "./assets/github-logo-white.svg";
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 // Acquires languages used across all repos of specific user. Returns Object
 async function getLanguageData(userData, repoData) {
@@ -17,7 +17,6 @@ async function getLanguageData(userData, repoData) {
     return { repoName: repo.name, repoLanguages: langResolve };
   });
 
-  //const langPromises = [];
   const languageData = await Promise.all(langPromises);
 
   return languageData;
@@ -50,10 +49,12 @@ function WelcomePage({ selectUser }) {
   );
 }
 
-function SearchBar({ onSearch, resetUser }) {
+function SearchBar({ onSearch, resetUser, userExists }) {
+  const [username, setUsername] = useState("");
+
   function handleSubmit(e) {
     e.preventDefault();
-    onSearch();
+    onSearch(username);
   }
 
   return (
@@ -66,12 +67,19 @@ function SearchBar({ onSearch, resetUser }) {
             id="profileSearch"
             name="profileSearch"
             placeholder="Enter GitHub username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           ></input>
-          <button id="searchSubmit" onClick={onSearch}>
+          <button id="searchSubmit" type="submit">
             Search
           </button>
         </form>
       </div>
+      {!userExists && (
+        <p className="noUserMessage">
+          <i>User does not exist.</i>
+        </p>
+      )}
     </>
   );
 }
@@ -150,7 +158,7 @@ function Repository({ repo, languages }) {
                 <span></span>
               )}
             </div>
-            <h4>{repo?.description}</h4>
+            <h4 className="repoDesc">{repo?.description}</h4>
           </div>
           <div className="repoData">
             <p>
@@ -192,11 +200,12 @@ function LanguageBreakdown({ languageData }) {
   languageArr = languageArr.sort((a, b) => b.value - a.value).slice(0, 10);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+  const chartSize = window.innerWidth < 600 ? 260 : 400;
 
   return (
     <div className="languageBreakdown">
       <h2>Top Used Languages</h2>
-      <PieChart width={400} height={400}>
+      <PieChart width={chartSize} height={chartSize}>
         <Pie data={languageArr} nameKey="name" dataKey="value" isAnimationActive={true}>
           {languageArr.map((entry, index) => {
             return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />;
@@ -213,6 +222,8 @@ export default function App() {
   const [userData, setUserData] = useState(null);
   const [repoData, setRepoData] = useState(null);
   const [langData, setLangData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userExists, setUserExists] = useState(true);
 
   // Fetches JSON user data from desired endpoint
   async function githubFetch(endpoint) {
@@ -232,6 +243,8 @@ export default function App() {
   // Seeks out and sets user data's state
   async function getUserData(selectedUsername) {
     const searchedUsername = selectedUsername;
+    setUserExists(true);
+    setIsLoading(true);
 
     try {
       const [userData, repoData] = await Promise.all([
@@ -245,7 +258,10 @@ export default function App() {
       setRepoData(repoData);
       setLangData(languageData);
     } catch (error) {
-      console.error("Here is the error: " + error);
+      console.error("Error on getUserData request: " + error);
+      setUserExists(false);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -258,9 +274,18 @@ export default function App() {
   return (
     <>
       <div className="header">
-        <SearchBar id="searchBar" onSearch={getUserData} resetUser={resetUser} />
+        <SearchBar
+          id="searchBar"
+          onSearch={getUserData}
+          resetUser={resetUser}
+          userExists={userExists}
+        />
       </div>
-      {!userData ? (
+      {isLoading ? (
+        <div className="loadingSpinnerContainer">
+          <div className="loadingSpinner"></div>
+        </div>
+      ) : !userData ? (
         <WelcomePage selectUser={getUserData} />
       ) : (
         <div className="main">

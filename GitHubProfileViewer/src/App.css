@@ -11,6 +11,15 @@
   --error: #F87171;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 h1, h2, h3, h4, h5, h6, p {
   margin: 0;
   line-height: 1.2;
@@ -99,13 +108,20 @@ body {
   cursor: pointer;
 }
 
+.searchDivContainer {
+  display: inline-flex;
+}
+
+.searchDivContainer p {
+  color: red;
+}
+
 .searchDiv {
   flex: 0 1 500px; 
   min-width: 0; 
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  margin-right: 40px;
   padding: 6px;
   background-color: var(--bg-card);
   border: 1px solid var(--accent);
@@ -139,6 +155,11 @@ body {
   color: rgb(146, 146, 146);
   background-color: var(--bg-card);
   border-radius: 9px;
+}
+
+.noUserMessage {
+  color: red;
+
 }
 
 .profileHeaderSection {
@@ -198,9 +219,9 @@ body {
 }
 
 .repoSection {
-  width: clamp(40%, 50%, 60%);
   display:flex;
   flex-direction: column;
+  flex: 1 1 60%;
   gap: 4px;
   padding: 30px;
   background-color: var(--bg-card);
@@ -254,6 +275,7 @@ body {
 .mainRepoContent {
   display: flex;
   justify-content: space-between;
+  gap: 15px;
 }
 
 .repoData {
@@ -287,7 +309,42 @@ body {
   border-radius: 30px;
 }
 
+.loadingSpinnerContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 250px;
+}
+
+.loadingSpinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 600px) {
+
+  .searchDiv {
+    flex: 1 1 auto;
+  }
+
+  #githubLogo {
+    display: none;
+  }
+
   .profileHeader {
     flex-direction: column;
     gap: 16px;
@@ -296,5 +353,9 @@ body {
   #profileImage {
     width: 80px;
     height: 80px;
+  }
+
+  .repoDesc {
+    display: none;
   }
 }
