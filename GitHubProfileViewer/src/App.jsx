@@ -191,14 +191,12 @@ function LanguageBreakdown({ languageData }) {
   // Sorting language list by number of bytes (highest to lowest), then grabbing top 10
   languageArr = languageArr.sort((a, b) => b.value - a.value).slice(0, 10);
 
-  console.log("Sums: ", languageSums);
-  console.log("Arr: ", languageArr);
-
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   return (
     <div className="languageBreakdown">
-      <PieChart width={500} height={500}>
+      <h2>Top Used Languages</h2>
+      <PieChart width={400} height={400}>
         <Pie data={languageArr} nameKey="name" dataKey="value" isAnimationActive={true}>
           {languageArr.map((entry, index) => {
             return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />;
@@ -278,3 +276,11 @@ export default function App() {
     </>
   );
 }
+
+/*
+, {
+      headers: {
+        Authorization: "Bearer " + import.meta.env.VITE_GITHUB_TOKEN,
+      },
+    }
+*/

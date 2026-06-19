@@ -190,11 +190,15 @@ body {
 }
 
 .profileBody {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
   width: 100%;
   min-width: 300px;
 }
 
 .repoSection {
+  width: clamp(40%, 50%, 60%);
   display:flex;
   flex-direction: column;
   gap: 4px;
@@ -274,6 +278,13 @@ body {
 
 .updatedAt > p {
   font-size: 12px;
+}
+
+.languageBreakdown {
+  padding: 30px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 30px;
 }
 
 @media (max-width: 600px) {
